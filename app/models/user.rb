@@ -7,6 +7,7 @@ class User < ApplicationRecord
 	has_secure_password
 	
 	has_many :microposts
+	
 	has_many :relationships
   has_many :followings, through: :relationships, source: :follow
   has_many :reverses_of_relationship, class_name: 'Relationship', foreign_key: 'follow_id'
@@ -29,5 +30,25 @@ class User < ApplicationRecord
   
   def feed_microposts
     Micropost.where(user_id: self.following_ids + [self.id])
+  end 
+  
+  has_many :post_relationships, class_name: 'PostRelationship', foreign_key: 'user_id'
+  has_many :favings, through: :post_relationships, source: :fav
+  
+  def fav(fav_post)
+    self.post_relationships.find_or_create_by(fav_id: fav_post.id)
+  end
+
+  def unfav(fav_post)
+    post_relationship = self.post_relationships.find_by(fav_id: fav_post.id)
+    post_relationship.destroy if post_relationship
+  end
+
+  def faving?(fav_post)
+    self.favings.include?(fav_post)
+  end
+  
+  def fav_microposts
+    Micropost.where(id: self.faving_ids)
   end
 end

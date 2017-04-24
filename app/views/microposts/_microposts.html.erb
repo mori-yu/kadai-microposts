@@ -12,6 +12,7 @@
         <div>
           <p><%= micropost.content %></p>
         </div>
+        <%= render 'post_relationships/fav_button', fav_post: micropost %>
         <div>
           <% if current_user == micropost.user %>
             <%= link_to "Delete", micropost, method: :delete, data: { confirm: "You sure?" }, class: 'btn btn-danger btn-xs' %>
@@ -21,4 +22,5 @@
     </li>
   <% end %>
   <%= paginate microposts %>
+  <%= link_to 'Favlist', favings_user_path(@user), class: 'btn btn-lg btn-primary' %>
 </ul>
