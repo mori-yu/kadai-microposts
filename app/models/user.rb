@@ -32,7 +32,7 @@ class User < ApplicationRecord
     Micropost.where(user_id: self.following_ids + [self.id])
   end 
   
-  has_many :post_relationships, class_name: 'PostRelationship', foreign_key: 'user_id'
+  has_many :post_relationships, class_name: 'PostRelationship', foreign_key: 'user_id', dependent: :destroy
   has_many :favings, through: :post_relationships, source: :fav
   
   def fav(fav_post)
